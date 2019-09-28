@@ -1,0 +1,26 @@
+scalar DateTime
+enum ShelterCategory {
+    CATS
+    DOGS
+    BOTH
+}
+type Shelter {
+    id: ID!
+    name: String!
+    description: String
+    trivial: Boolean!
+    category: ShelterCategory!
+    created_at: DateTime
+}
+input PostShelterInput {
+    name: String!
+    description: String
+    category: ShelterCategory=DOGS
+}
+type Query {
+    totalShelters: Int!
+    allShelters: [Shelter!]!
+}
+type Mutation {
+    postShelter(input: PostShelterInput!): Shelter!
+}
