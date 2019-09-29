@@ -11,16 +11,32 @@ type Shelter {
     trivial: Boolean!
     category: ShelterCategory!
     created_at: DateTime
+    posted_by: User!
 }
+type User {
+    id: ID!
+    email: String!
+    password: String!
+}
+
 input PostShelterInput {
     name: String!
     description: String
     category: ShelterCategory=DOGS
 }
+input SignInput {
+    email: String!
+    password: String!
+}
+
 type Query {
     totalShelters: Int!
     allShelters: [Shelter!]!
+    totalUsers: Int!
+    allUsers: [User!]!
 }
 type Mutation {
     postShelter(input: PostShelterInput!): Shelter!
+    signIn(input: SignInput): String!
+    signUp(input: SignInput): String!
 }

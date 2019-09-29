@@ -26,8 +26,8 @@ async function start() {
 
     app.get('/', (req, res) => res.end('Welcome'));
 
-    app.listen({port: 4000}, () => {
-        console.log(`App listen on port 4000 by ${server.graphqlPath}`)
+    app.listen({port: process.env.APP_PORT}, () => {
+        console.log(`App listen on port ${process.env.APP_PORT}} by ${server.graphqlPath}`)
     });
 }
 
