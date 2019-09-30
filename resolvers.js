@@ -1,6 +1,7 @@
 const { GraphQLScalarType } =  require('graphql');
 const uuidv1 = require('uuid/v1');
 const bcrypt = require('bcrypt');
+const { BlogArticle } = require('./models');
 
 const resolvers = {
     Query: {
@@ -17,7 +18,7 @@ const resolvers = {
             return db.collection('shelters').find().toArray();
         },
         blogArticles: (parent, args, { db }) => {
-            return db.collection('blog_articles').find({shelter_id: args.shelter_id}).toArray();
+            return BlogArticle.find({shelter_id: args.shelter_id});
         }
     },
     Mutation: {
@@ -59,17 +60,12 @@ const resolvers = {
             db.collection('users').insertOne(newUser);
             return '123';
         },
-        postBlogArticle: async (parent, args, { db }) => {
-            const newArticle = {
-                created_at: new Date(),
+        postBlogArticle: async (parent, args) => {
+            const article = new BlogArticle({
                 user_id: "3e4cccc0-e2fb-11e9-a7aa-dd0f452832bc",
                 ...args.input
-            };
-            if (!newArticle.id) {
-                newArticle.id = uuidv1();
-            }
-            db.collection('blog_articles').replaceOne({id: newArticle.id}, newArticle, {upsert: true});
-            return newArticle;
+            });
+            return await article.save();
         }
     },
     Shelter: {
@@ -77,7 +73,7 @@ const resolvers = {
             return db.collection('users').findOne({id: parent.user_id});
         },
         blog_articles: (parent, args, { db }) => {
-            return db.collection('blog_articles').find({shelter_id: parent.id}).toArray();
+            return BlogArticle.find({shelter_id: parent.id});
         }
     },
     DateTime: new GraphQLScalarType({

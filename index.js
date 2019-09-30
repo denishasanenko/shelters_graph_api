@@ -3,8 +3,8 @@ const { MongoClient } = require('mongodb');
 const express = require('express');
 const { readFileSync } = require('fs');
 const typeDefs = readFileSync('./typeDefs.graphql', 'UTF-8');
-const resolvers = require('./resolvers');
 require('dotenv').config();
+const resolvers = require('./resolvers');
 
 async function start() {
     const app = express();
