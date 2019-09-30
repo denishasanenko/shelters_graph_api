@@ -15,6 +15,9 @@ const resolvers = {
         },
         allShelters: (parent, args, { db }) => {
             return db.collection('shelters').find().toArray();
+        },
+        blogArticles: (parent, args, { db }) => {
+            return db.collection('blog_articles').find({shelter_id: args.shelter_id}).toArray();
         }
     },
     Mutation: {
@@ -55,12 +58,26 @@ const resolvers = {
             }
             db.collection('users').insertOne(newUser);
             return '123';
+        },
+        postBlogArticle: async (parent, args, { db }) => {
+            const newArticle = {
+                created_at: new Date(),
+                user_id: "3e4cccc0-e2fb-11e9-a7aa-dd0f452832bc",
+                ...args.input
+            };
+            if (!newArticle.id) {
+                newArticle.id = uuidv1();
+            }
+            db.collection('blog_articles').replaceOne({id: newArticle.id}, newArticle, {upsert: true});
+            return newArticle;
         }
     },
     Shelter: {
-        trivial: () => true,
         posted_by: (parent, args, { db }) => {
             return db.collection('users').findOne({id: parent.user_id});
+        },
+        blog_articles: (parent, args, { db }) => {
+            return db.collection('blog_articles').find({shelter_id: parent.id}).toArray();
         }
     },
     DateTime: new GraphQLScalarType({
