@@ -1,15 +1,14 @@
 const { GraphQLScalarType } =  require('graphql');
 const uuidv1 = require('uuid/v1');
-const bcrypt = require('bcrypt');
-const { BlogArticle } = require('./models');
+const { BlogArticle, User } = require('./models');
 
 const resolvers = {
     Query: {
-        totalUsers: (parent, args, { db }) => {
-            return db.collection('users').estimatedDocumentCount();
+        totalUsers: async (parent, args, { db }) => {
+            return await User.count();
         },
-        allUsers: (parent, args, { db }) => {
-            return db.collection('users').find().toArray();
+        allUsers: async (parent, args, { db }) => {
+            return await User.find();
         },
         totalShelters: (parent, args, { db }) => {
             return db.collection('shelters').estimatedDocumentCount();
@@ -17,8 +16,8 @@ const resolvers = {
         allShelters: (parent, args, { db }) => {
             return db.collection('shelters').find().toArray();
         },
-        blogArticles: (parent, args, { db }) => {
-            return BlogArticle.find({shelter_id: args.shelter_id});
+        blogArticles: async (parent, args, { db }) => {
+            return await BlogArticle.find({shelter_id: args.shelter_id});
         }
     },
     Mutation: {
@@ -35,29 +34,21 @@ const resolvers = {
             return newShelter;
         },
         signIn: async (parent, args, { db }) => {
-            const user = await db.collection('users').findOne({email: args.input.email});
-            console.log(user);
-            if (!user || !await bcrypt.compare(args.input.password, user.password)) {
+            const user = await User.findOne({email: args.input.email});
+            if (!user || !user.comparePassword(args.input.password)) {
                 throw new Error('Email or Password is incorrect');
             }
             return '123';
         },
         signUp: async (parent, args, { db }) => {
-            const user = await db.collection('users').findOne({email: args.input.email});
-            console.log(user);
+            const user = await User.findOne({email: args.input.email});
             if (user) {
                 throw new Error('Email already registered');
             }
-            const newPassword = await bcrypt.hash(args.input.password, 10);
-            const newUser = {
-                ...args.input,
-                created_at: new Date(),
-                password: newPassword
-            };
-            if (!newUser.id) {
-                newUser.id = uuidv1();
-            }
-            db.collection('users').insertOne(newUser);
+            const newUser = new User({
+                ...args.input
+            });
+            await newUser.save();
             return '123';
         },
         postBlogArticle: async (parent, args) => {
@@ -69,11 +60,11 @@ const resolvers = {
         }
     },
     Shelter: {
-        posted_by: (parent, args, { db }) => {
-            return db.collection('users').findOne({id: parent.user_id});
+        posted_by: async (parent, args, { db }) => {
+            return await User.findOne({id: parent.user_id});
         },
-        blog_articles: (parent, args, { db }) => {
-            return BlogArticle.find({shelter_id: parent.id});
+        blog_articles: async (parent, args, { db }) => {
+            return await BlogArticle.find({shelter_id: parent.id});
         }
     },
     DateTime: new GraphQLScalarType({
