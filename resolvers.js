@@ -3,16 +3,16 @@ const { BlogArticle, User, Shelter } = require('./models');
 
 const resolvers = {
     Query: {
-        totalUsers: async (parent, args) => {
+        totalUsers: async () => {
             return await User.count();
         },
-        allUsers: async (parent, args) => {
+        allUsers: async () => {
             return await User.find();
         },
-        totalShelters: async (parent, args) => {
+        totalShelters: async () => {
             return await Shelter.count();
         },
-        allShelters: async (parent, args) => {
+        allShelters: async () => {
             return await Shelter.find();
         },
         blogArticles: async (parent, args) => {
@@ -54,10 +54,10 @@ const resolvers = {
         }
     },
     Shelter: {
-        posted_by: async (parent, args) => {
+        posted_by: async (parent) => {
             return await User.findOne({id: parent.user_id});
         },
-        blog_articles: async (parent, args) => {
+        blog_articles: async (parent) => {
             return await BlogArticle.find({shelter_id: parent.id});
         }
     },
