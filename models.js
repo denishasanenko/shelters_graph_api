@@ -20,6 +20,22 @@ BlogArticleScheme.pre('save', function (next) {
 });
 const BlogArticle = mongoose.model('BlogArticle', BlogArticleScheme);
 
+const ShelterScheme = new Schema(
+    {
+        id: String,
+        user_id: String,
+        name: String,
+        description: String,
+        category: String
+    }
+);
+ShelterScheme.pre('save', function (next) {
+    if (!this.id) {
+        this.id = uuidv1();
+    }
+    next();
+});
+const Shelter = mongoose.model('Shelter', ShelterScheme);
 
 const UserScheme = new Schema(
     {
@@ -44,5 +60,6 @@ const User = mongoose.model('User', UserScheme);
 
 module.exports = {
     BlogArticle,
+    Shelter,
     User
 };
