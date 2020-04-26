@@ -5,6 +5,7 @@
   "repository": "https://github.com/denishasanenko/shelters_graph_api",
   "main": "index.js",
   "scripts": {
+    "watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
