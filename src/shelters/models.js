@@ -19,4 +19,21 @@ ShelterScheme.pre('save', function (next) {
 });
 const Shelter = mongoose.model('Shelter', ShelterScheme);
 
-module.exports = Shelter;
+const PetScheme = new Schema(
+    {
+        id: String,
+        user_id: String,
+        name: String,
+        shelter_id: String,
+        picture: String
+    }
+);
+PetScheme.pre('save', function (next) {
+    if (!this.id) {
+        this.id = uuidv1();
+    }
+    next();
+});
+const Pet = mongoose.model('Pet', PetScheme);
+
+module.exports = { Shelter, Pet };

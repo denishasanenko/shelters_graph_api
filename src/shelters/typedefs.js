@@ -15,6 +15,12 @@ const typedefs = gql`
         posted_by: User!
         blog_articles: [BlogArticle!]
     }
+    type Pet {
+        id: ID!
+        name: String!
+        shelter: Shelter
+        picture: String!
+    }
 
     input PostShelterInput {
         name: String!
@@ -22,12 +28,20 @@ const typedefs = gql`
         category: ShelterCategory=DOGS
     }
 
+    input PostPetInput {
+        name: String!
+        shelter_id: ID!
+        picture: String
+    }
+
     extend type Query {
         totalShelters: Int!
         allShelters: [Shelter!]!
+        pets: [Pet!]!
     }
     extend type Mutation {
         postShelter(input: PostShelterInput!): Shelter!
+        postPet(input: PostPetInput!): Pet!
     }
 `;
 
