@@ -43,7 +43,7 @@ const resolvers = {
         }
     },
     Pet: {
-        shelter: async (parent) => {
+        shelter: async (parent, args, context) => {
             return await Shelter.findOne({id: parent.shelter_id});
         },
         picture: (parent) => {
