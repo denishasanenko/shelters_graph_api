@@ -12,6 +12,9 @@ const resolvers = {
         },
         pets: async () => {
             return await Pet.find();
+        },
+        pet: async (parent, args) => {
+            return await Pet.findOne({name: args.id});
         }
     },
     Mutation: {
@@ -47,7 +50,7 @@ const resolvers = {
             return await Shelter.findOne({id: parent.shelter_id});
         },
         picture: (parent) => {
-            return parent.picture ? parent.picture : 'https://lh3.googleusercontent.com/proxy/OiS-BNukRhA6qV2_RgqE1rCQnnzGVE8rhTR9baTaS6qJe2-UBI4QL4uUAJd1xcn9u_sx9KbDZBCWZe7HUq2rP6NToowkHpec-Vm9Uq5PLo7Z5LH2xVJZdMTvP40BAbLJd7XJXfgniyY8arg';
+            return parent.picture ? parent.picture : 'assets/banner.png';
         }
     }
 };

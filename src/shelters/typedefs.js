@@ -6,6 +6,11 @@ const typedefs = gql`
         DOGS
         BOTH
     }
+    enum PetGender {
+        unknown
+        male
+        female
+    }
     type Shelter {
         id: ID!
         name: String!
@@ -20,6 +25,8 @@ const typedefs = gql`
         name: String!
         shelter: Shelter
         picture: String!
+        gender: PetGender
+        age: Int
     }
 
     input PostShelterInput {
@@ -32,12 +39,15 @@ const typedefs = gql`
         name: String!
         shelter_id: ID!
         picture: String
+        gender: PetGender
+        age: Int
     }
 
     extend type Query {
         totalShelters: Int!
         allShelters: [Shelter!]!
         pets: [Pet!]!
+        pet(id: String): Pet!
     }
     extend type Mutation {
         postShelter(input: PostShelterInput!): Shelter!

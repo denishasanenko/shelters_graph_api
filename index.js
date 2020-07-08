@@ -1,5 +1,6 @@
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 let typeDefs = [
@@ -16,11 +17,27 @@ resolvers = [
     require('./src/articles/resolvers')
 ];
 
+const context = ({ req }) => {
+    // get the user token from the headers
+    let user = {};
+    const token = req.headers.authorization || '';
+    const splitToken = token.split(' ')[1];
+    try {
+        jwt.verify(splitToken, 'secret');
+        user = jwt.decode(splitToken);
+    } catch (e) {
+
+    }
+    return {user};
+}
+
+
 const app = express();
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers
+    resolvers,
+    context
 });
 
 server.applyMiddleware({ app });

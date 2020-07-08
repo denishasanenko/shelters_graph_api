@@ -25,12 +25,24 @@ const PetScheme = new Schema(
         user_id: String,
         name: String,
         shelter_id: String,
-        picture: String
+        picture: String,
+        gender: {
+            type: String,
+            enum: ['unknown', 'male', 'female'],
+            default: 'unknown'
+        },
+        age: { // in months
+            type: Number,
+            default: 0
+        }
     }
 );
 PetScheme.pre('save', function (next) {
     if (!this.id) {
         this.id = uuidv1();
+    }
+    if (!this.gender) {
+        this.gender = 'unknown';
     }
     next();
 });
