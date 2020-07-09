@@ -44,6 +44,6 @@ server.applyMiddleware({ app });
 
 app.get('/', (req, res) => res.end('Welcome'));
 
-app.listen({port: process.env.APP_PORT}, () => {
-    console.log(`App listen on port ${process.env.APP_PORT}} by ${server.graphqlPath}`)
+app.listen({port: process.env.PORT}, () => {
+    console.log(`App listen on port ${process.env.PORT} by ${server.graphqlPath}`)
 });
